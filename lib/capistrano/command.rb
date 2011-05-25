@@ -21,7 +21,7 @@ module Capistrano
         attr_reader :options
 
         def initialize(command, options, callback)
-          @command = command.strip.gsub(/\r?\n/, "\\\n")
+          @command = command
           @callback = callback || Capistrano::Configuration.default_io_proc
           @options = options
           @skip = false
@@ -206,7 +206,13 @@ module Capistrano
               request_pty_if_necessary(channel) do |ch, success|
                 if success
                   logger.trace "executing command", ch[:server] if logger
-                  cmd = replace_placeholders(channel[:branch].command, ch)
+                  cmd = if channel[:branch].command.respond_to? :call
+                    channel[:branch].command.call(ch)
+                  else
+                    channel[:branch].command
+                  end
+                                    
+                  cmd = replace_placeholders(cmd.strip.gsub(/\r?\n/, "\\\n"), ch)
 
                   if options[:shell] == false
                     shell = nil
