@@ -1,6 +1,7 @@
 require 'benchmark'
 require 'capistrano/errors'
 require 'capistrano/processable'
+require 'pp'
 
 module Capistrano
 
@@ -211,8 +212,10 @@ module Capistrano
                   else
                     channel[:branch].command
                   end
-                                    
+                                                      
                   cmd = replace_placeholders(cmd.strip.gsub(/\r?\n/, "\\\n"), ch)
+                  channel[:branch].callback = 
+                    tree.configuration.sudo_behavior_callback(channel[:branch].callback)
 
                   if options[:shell] == false
                     shell = nil

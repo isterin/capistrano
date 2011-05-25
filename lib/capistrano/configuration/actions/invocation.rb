@@ -164,12 +164,6 @@ module Capistrano
 
           options = add_default_command_options(options)
 
-          tree.each do |branch|
-            if branch.command.include?(sudo)
-              branch.callback = sudo_behavior_callback(branch.callback)
-            end
-          end
-
           execute_on_servers(options) do |servers|
             targets = servers.map { |s| sessions[s] }
             Command.process(tree, targets, options.merge(:logger => logger))
