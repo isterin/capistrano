@@ -1,7 +1,6 @@
 require 'benchmark'
 require 'capistrano/errors'
 require 'capistrano/processable'
-require 'pp'
 
 module Capistrano
 
